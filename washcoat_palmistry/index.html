@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WGC5QLPNV8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-WGC5QLPNV8');
+    </script>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vvv9n28sd6");
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Palm Reader - 스마트 AI 손금 분석 및 운세</title>
+    <meta name="description" content="최첨단 AI 기술을 활용한 온라인 손금 분석 서비스입니다. 양손 사진으로 당신의 성격, 건강, 운명 정보를 확인하세요.">
+    <meta name="keywords" content="손금, AI손금, 손금분석, 무료운세, 손금보는법, 손금운세">
+    <meta name="google-adsense-account" content="ca-pub-7086281720678002">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7086281720678002"
+     crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- MediaPipe Hands for auto-detection and landmarking -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <nav class="nav-container">
+            <div class="logo">AI Palm Reader</div>
+            <div class="nav-links">
+                <a href="#analyze-section">분석하기</a>
+                <a href="#how-it-works">원리보기</a>
+                <button id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>스마트 AI가 당신의 손바닥 위 운명을 읽어드립니다.</h2>
+            <p>수천 장의 손금 데이터를 학습한 AI 모델이 당신의 성격, 건강, 그리고 미래의 흐름을 긍정적으로 분석해 드립니다.</p>
+        </section>
+
+        <div id="analyze-section">
+            <section class="user-info-v2">
+                <div class="info-card">
+                    <div class="input-group">
+                        <label>성별</label>
+                        <div class="gender-btn-group">
+                            <label class="gender-btn">
+                                <input type="radio" name="gender" value="male" checked>
+                                <span>남성</span>
+                            </label>
+                            <label class="gender-btn">
+                                <input type="radio" name="gender" value="female">
+                                <span>여성</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="input-group">
+                        <label for="age">만 나이</label>
+                        <div class="age-input-wrapper">
+                            <input type="number" id="age" min="1" max="120" value="25">
+                            <span class="unit">세</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Camera Modal -->
+        <div id="cameraModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="camera-container">
+                    <video id="video" autoplay playsinline muted></video>
+                    <div class="camera-overlay"></div>
+                    <button id="captureBtn" class="capture-btn">📸 찰칵!</button>
+                </div>
+                <p class="camera-hint">손바닥이 화면에 꽉 차도록 맞춰주세요.</p>
+            </div>
+        </div>
+
+        <div class="analysis-container">
+            <div class="analysis-box" id="boxLeft">
+                <div class="box-header">
+                    <span>✋ 왼손 (선천운)</span>
+                </div>
+                <div class="canvas-wrapper" data-hand="left">
+                    <canvas id="canvasLeft"></canvas>
+                    <div id="previewLeft" class="preview-placeholder">
+                        <svg class="camera-icon" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                            <circle cx="12" cy="13" r="3"/>
+                        </svg>
+                        <span>왼손 사진 촬영/업로드</span>
+                    </div>
+                    <input type="file" class="hidden-file-input" accept="image/*">
+                </div>
+            </div>
+            <div class="analysis-box" id="boxRight">
+                <div class="box-header">
+                    <span>✋ 오른손 (후천운)</span>
+                </div>
+                <div class="canvas-wrapper" data-hand="right">
+                    <canvas id="canvasRight"></canvas>
+                    <div id="previewRight" class="preview-placeholder">
+                        <svg class="camera-icon" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                            <circle cx="12" cy="13" r="3"/>
+                        </svg>
+                        <span>오른손 사진 촬영/업로드</span>
+                    </div>
+                    <input type="file" class="hidden-file-input" accept="image/*">
+                </div>
+            </div>
+        </div>
+
+        <div class="action-section">
+            <button id="analyzeBtn" class="primary-btn" disabled>양손 사진을 모두 올려주세요</button>
+            <div class="secondary-actions">
+                <button id="resetBtn" class="reset-btn-v2">
+                    🔄 모든 자료 지우고 다시 시작
+                </button>
+            </div>
+        </div>
+
+        <div id="result" class="result-section"></div>
+
+        <section id="how-it-works" class="info-section">
+            <h3>AI 손금 분석이란 무엇인가요?</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>🔍 패턴 인식 기술</h4>
+                    <p>Google MediaPipe 기술을 사용하여 손바닥의 수십 개 랜드마크를 실시간으로 추적합니다. 생명선, 두뇌선, 감정선 등의 주요 손금 위치를 정밀하게 파악합니다.</p>
+                </div>
+                <div class="info-item">
+                    <h4>🧠 데이터 기반 분석</h4>
+                    <p>전통적인 손금 해석 이론과 현대적인 통계 데이터를 결합하여 사용자에게 가장 긍정적이고 도움이 되는 조언을 생성합니다.</p>
+                </div>
+                <div class="info-item">
+                    <h4>🔒 보안 및 프라이버시</h4>
+                    <p>업로드된 이미지는 분석 후 즉시 메모리에서 제거되며, 서버에 영구적으로 저장되지 않아 안심하고 이용하실 수 있습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-section">
+            <h3>자주 묻는 질문</h3>
+            <div class="faq-item">
+                <h5>Q. 왼손과 오른손 중 어느 손이 더 중요한가요?</h5>
+                <p>일반적으로 왼손은 타고난 기질과 선천적인 운을, 오른손은 본인의 노력으로 개척해나가는 후천적인 운을 나타냅니다. AI Palm Reader는 두 손을 모두 분석하여 종합적인 결과를 제공합니다.</p>
+            </div>
+            <div class="faq-item">
+                <h5>Q. 분석 결과가 얼마나 정확한가요?</h5>
+                <p>본 서비스는 과학적인 근거보다는 AI 기술을 활용한 흥미 위주의 분석 결과를 제공합니다. 삶의 지침으로 삼기보다는 긍정적인 에너지를 얻는 용도로 즐겨주세요.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 AI Palm Reader | 운명은 당신의 손안에 있습니다.</p>
+            <div class="footer-links">
+                <a href="terms.html">이용약관</a>
+                <a href="privacy.html">개인정보처리방침</a>
+                <a href="mailto:contact@example.com">문의하기</a>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>

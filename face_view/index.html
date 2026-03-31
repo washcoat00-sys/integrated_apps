@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceView - 관상으로 보는 나의 운명</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- face-api.js 라이브러리 (vladmandic fork) -->
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans leading-normal tracking-normal">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-indigo-600 flex items-center">
+                <i class="fas fa-eye mr-2"></i> FaceView
+            </h1>
+            <p class="text-sm text-gray-500 hidden md:block">나의 얼굴에 숨겨진 운명을 확인하세요</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Hero Section -->
+            <section class="text-center mb-12">
+                <h2 class="text-4xl font-extrabold text-gray-800 mb-4">당신의 관상은 어떤가요?</h2>
+                <p class="text-lg text-gray-600">카메라로 얼굴을 찍거나 사진을 업로드하여 성격, 운명, 재물운 등 7가지 운세를 분석합니다.</p>
+                <p class="text-sm text-amber-600 mt-2 font-medium">※ 로컬 환경(file://)에서는 보안 정책상 작동하지 않을 수 있습니다. Live Server 등을 이용해 실행해 주세요.</p>
+            </section>
+
+            <!-- Input Section -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-12 transition-all hover:shadow-2xl">
+                <div class="p-8">
+                    <div id="media-container" class="relative bg-gray-100 rounded-xl overflow-hidden aspect-video flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <video id="video" autoplay muted playsinline class="absolute inset-0 w-full h-full object-cover hidden"></video>
+                        <canvas id="overlay" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                        <div id="placeholder" class="text-center p-6">
+                            <i class="fas fa-camera text-5xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-500 font-medium">카메라를 켜거나 이미지를 업로드하세요</p>
+                        </div>
+                        <img id="image-preview" class="absolute inset-0 w-full h-full object-contain hidden">
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="mt-8">
+                        <div class="relative">
+                            <input type="file" id="file-upload" accept="image/*" class="hidden">
+                            <label for="file-upload" class="flex items-center justify-center bg-indigo-600 text-white hover:bg-indigo-700 font-bold py-4 px-6 rounded-lg transition duration-300 cursor-pointer shadow-md text-lg">
+                                <i class="fas fa-camera-retro mr-2"></i> 사진 찍기 / 업로드
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-capture" class="hidden mt-4 w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-4 px-6 rounded-lg transition duration-300 shadow-lg transform hover:scale-[1.02]">
+                        <i class="fas fa-camera-retro mr-2"></i> 관상 분석 시작!
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loading" class="hidden text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-indigo-600 mb-4"></div>
+                <p class="text-xl font-semibold text-gray-700">관상을 정밀 분석 중입니다...</p>
+                <p class="text-gray-500">조금만 기다려 주세요 (데이터 모델 로딩 중)</p>
+            </div>
+
+            <!-- Result Section -->
+            <section id="result" class="hidden animate-fadeIn">
+                <div class="bg-indigo-900 text-white rounded-2xl shadow-2xl p-8 mb-8">
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div id="result-photo" class="w-48 h-48 rounded-full border-4 border-white overflow-hidden shadow-lg flex-shrink-0 bg-gray-700">
+                            <!-- Captured Face Image Goes Here -->
+                        </div>
+                        <div class="text-center md:text-left">
+                            <h3 class="text-3xl font-bold mb-2">분석 결과: <span id="face-type" class="text-yellow-400">분석 중...</span></h3>
+                            <p class="text-indigo-200 text-lg italic" id="face-summary">"분석을 완료했습니다."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="result-cards">
+                    <!-- Result cards will be injected here -->
+                </div>
+
+                <div class="mt-12 text-center">
+                    <button onclick="location.reload()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">
+                        <i class="fas fa-redo mr-2"></i> 다시 분석하기
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-20 py-8">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 FaceView. AI 기반 관상 분석 기술. 재미로만 봐주세요!</p>
+        </div>
+    </footer>
+
+    <!-- 비즈니스 로직은 라이브러리 로드 후 실행되도록 맨 아래에 배치 -->
+    <script src="script.js"></script>
+</body>
+</html>
